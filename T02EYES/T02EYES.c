@@ -56,39 +56,81 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine,
   return msg.wParam;
 }
 
+VOID  DrawEye( HDC hDc, INT X, INT Y, INT R, INT R1, INT mx, INT my )
+{
+  INT dx = mx - X, dy = my - Y, sx, sy;
+  DOUBLE len = sqrt(dx * dx + dy * dy),
+    t = (R - R1) / len;
+
+  SelectObject(hDc, GetStockObject(DC_PEN));
+  SelectObject(hDc, GetStockObject(DC_BRUSH));
+  SetDCPenColor(hDc, RGB(255, 0, 0));
+  SetDCBrushColor(hDc, RGB(0, 0, 0));
+  Ellipse(hDc, X - R, Y - R, X + R, Y + R);
+  if (len < R - R1)
+    sx = mx, sy = my;
+  else
+  {
+    sx = (INT)(X + dx * t), sy = (INT)(Y + dy * t);
+    t = (R - R1) / len;
+  }
+  SelectObject(hDc, GetStockObject(DC_PEN));
+  SelectObject(hDc, GetStockObject(DC_BRUSH));
+  SetDCPenColor(hDc, RGB(0, 0, 0));
+  SetDCBrushColor(hDc, RGB(255, 255, 255));
+  Ellipse(hDc, sx - R1, sy - R1, sx + R1, sy + R1);
+}
+
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
 {
   HDC hDc;
   POINT pt;
   RECT rc;
+  PAINTSTRUCT ps;
+  static INT W, H;
+  static HDC hMemDC;
+  static HBITMAP hBm;
   
   switch (Msg)
   {
   case WM_CREATE:
+    hDc = GetDC(hWnd);
+    hMemDC = CreateCompatibleDC(hDc);
+    ReleaseDC(hWnd, hDc);
     SetTimer(hWnd, 47, 30, NULL);
+    return 0;
+  case WM_SIZE:
+    H = HIWORD(lParam);
+    W = LOWORD(lParam);
+    if (hBm != NULL)
+      DeleteObject(hBm);
+    hDc = GetDC(hWnd);
+    hBm = CreateCompatibleBitmap(hDc, W, H);
+    ReleaseDC(hWnd, hDc);
+    SelectObject(hMemDC, hBm);
+    SendMessage(hWnd, WM_TIMER, 0, 0);
+    return 0;
   case WM_TIMER:
-    GetClientRect(hWnd, &rc);
     GetCursorPos(&pt);
     ScreenToClient(hWnd, &pt);
-    hDc = GetDC(hWnd);
-    Rectangle(hDc, 0, 0, rc.right, rc.bottom);
-    SelectObject(hDc, GetStockObject(DC_PEN));
-    SelectObject(hDc, GetStockObject(DC_BRUSH));
-    SetDCPenColor(hDc, RGB(255, 0, 0));
-    SetDCBrushColor(hDc, RGB(0, 255, 255));
-    Ellipse(hDc, 0, 0, rc.right, rc.bottom);
-    MoveToEx(hDc, rc.right / 2, rc.bottom / 2, NULL);
-    DOUBLE R = sqrt((pt.y - rc.bottom / 2) * (pt.y - rc.bottom / 2) + (pt.x - rc.right / 2) * (pt.x - rc.right / 2)),
-      sinus = (pt.y - rc.bottom / 2) / R,
-      cosinus = (pt.x - rc.right / 2) / R;
-    SelectObject(hDc, GetStockObject(DC_PEN));
-    SelectObject(hDc, GetStockObject(DC_BRUSH));
-    SetDCPenColor(hDc, RGB(0, 0, 0));
-    SetDCBrushColor(hDc, RGB(255, 255, 255));
-    Ellipse(hDc, rc.right / 2 - 100, rc.bottom / 2 - 100, rc.right / 2 + 100, rc.bottom / 2 + 100);
-    ReleaseDC(hWnd, hDc);
+
+    Rectangle(hMemDC, 0, 0, W, H);
+
+    DrawEye(hMemDC, 100, 100, 78, 30, pt.x, pt.y);
+
+    InvalidateRect(hWnd, NULL, FALSE);
+
     return 0;
+  case WM_PAINT:
+    hDc = BeginPaint(hWnd, &ps);
+    BitBlt(hDc, 0, 0, W, H, hMemDC, 0, 0, SRCCOPY);
+    EndPaint(hWnd, &ps);
+    return 0;
+  case WM_ERASEBKGND:
+    return 1;
   case WM_DESTROY:
+    DeleteObject(hBm);
+    DeleteDC(hMemDC);
     PostMessage(hWnd, WM_QUIT, 0, 0);
     KillTimer(hWnd, 47);
     return 0;
