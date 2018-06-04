@@ -65,8 +65,9 @@ VOID  DrawEye( HDC hDc, INT X, INT Y, INT R, INT R1, INT mx, INT my )
   SelectObject(hDc, GetStockObject(DC_PEN));
   SelectObject(hDc, GetStockObject(DC_BRUSH));
   SetDCPenColor(hDc, RGB(255, 0, 0));
-  SetDCBrushColor(hDc, RGB(0, 0, 0));
+  SetDCBrushColor(hDc, RGB(255, 255, 255));
   Ellipse(hDc, X - R, Y - R, X + R, Y + R);
+
   if (len < R - R1)
     sx = mx, sy = my;
   else
@@ -77,8 +78,9 @@ VOID  DrawEye( HDC hDc, INT X, INT Y, INT R, INT R1, INT mx, INT my )
   SelectObject(hDc, GetStockObject(DC_PEN));
   SelectObject(hDc, GetStockObject(DC_BRUSH));
   SetDCPenColor(hDc, RGB(0, 0, 0));
-  SetDCBrushColor(hDc, RGB(255, 255, 255));
+  SetDCBrushColor(hDc, RGB(0, 0, 0));
   Ellipse(hDc, sx - R1, sy - R1, sx + R1, sy + R1);
+
 }
 
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
@@ -90,6 +92,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   static INT W, H;
   static HDC hMemDC;
   static HBITMAP hBm;
+  INT i, j;
   
   switch (Msg)
   {
@@ -102,11 +105,11 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   case WM_SIZE:
     H = HIWORD(lParam);
     W = LOWORD(lParam);
+
     if (hBm != NULL)
       DeleteObject(hBm);
-    hDc = GetDC(hWnd);
-    hBm = CreateCompatibleBitmap(hDc, W, H);
-    ReleaseDC(hWnd, hDc);
+
+    hBm = CreateCompatibleBitmap(hMemDC, W, H);
     SelectObject(hMemDC, hBm);
     SendMessage(hWnd, WM_TIMER, 0, 0);
     return 0;
@@ -114,13 +117,20 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     GetCursorPos(&pt);
     ScreenToClient(hWnd, &pt);
 
+    SelectObject(hMemDC, GetStockObject(DC_BRUSH));
+    SetDCBrushColor(hMemDC, RGB(0, 128, 0));
     Rectangle(hMemDC, 0, 0, W, H);
 
-    DrawEye(hMemDC, 100, 100, 78, 30, pt.x, pt.y);
+    for (i = 0; i <= 5000; i += 200)
+      for (j = 0; j <= 1000; j += 200)
+         DrawEye(hMemDC, 100 + i, 100 + j, 78, 30, pt.x, pt.y);
 
     InvalidateRect(hWnd, NULL, FALSE);
 
     return 0;
+  case WM_CLOSE:
+    if(MessageBox(hWnd, "Do you want to close the window?", "Exit", MB_YESNO == IDYES))
+      SendMessage(hWnd, WM_DESTROY, 0, 0);
   case WM_PAINT:
     hDc = BeginPaint(hWnd, &ps);
     BitBlt(hDc, 0, 0, W, H, hMemDC, 0, 0, SRCCOPY);
