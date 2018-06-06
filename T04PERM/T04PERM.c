@@ -1,23 +1,23 @@
 /* FILE NAME: T04PERM.C
- * PROGRAMMER: VG6
- * DATE: 05.06.2018
- * PURPOSE: Preparing for matrix
- */
+* PROGRAMMER: VG6
+* DATE: 05.06.2018
+* PURPOSE: Preparing for matrix
+*/
 
 #include <stdio.h>
 #include <windows.h>
 
 #define MAX 4
-INT P[MAX], parity = 1;
+INT P[MAX];
+BOOL parity = TRUE;
 
 /*Main numbers func */
-VOID Store( VOID )
+VOID Store(VOID)
 {
   INT i;
   FILE *F;
 
   F = fopen("PERM.txt", "a");
-
   if (F == NULL)
     return;
 
@@ -30,7 +30,7 @@ VOID Store( VOID )
 }
 
 /*Swap func */
-VOID Swap( INT *A, INT *B )
+VOID Swap(INT *A, INT *B)
 {
   INT tmp = *A;
 
@@ -39,9 +39,10 @@ VOID Swap( INT *A, INT *B )
 }
 
 /* Sort func */
-VOID Go( INT POS )
+VOID Go(INT POS)
 {
-  INT i;
+  INT i, x;
+  BOOL save_parity;
 
   if (POS == MAX)
   {
@@ -50,25 +51,28 @@ VOID Go( INT POS )
   }
   else
   {
-    for (i = POS; i < MAX; i++)
+    Go(POS + 1);
+    save_parity = parity;
+    for (i = POS + 1; i < MAX; i++)
     {
       Swap(&P[POS], &P[i]);
-      if (POS == 1)
-         parity = parity;
-      else
-        parity = 1 - parity;
+      parity = !parity;
       Go(POS + 1);
-      Swap(&P[POS], &P[i]);
     }
+    x = P[POS];
+    for (i = POS + 1; i < MAX; i++)
+      P[i - 1] = P[i];
+    P[MAX - 1] = x;
+    parity = save_parity;
   }
 }
 
-VOID main( VOID )
+VOID main(VOID)
 {
   INT i;
 
   for (i = 0; i < MAX; i++)
-    P[i] = i + 1; 
+    P[i] = i + 1;
 
   Go(0);
 }
