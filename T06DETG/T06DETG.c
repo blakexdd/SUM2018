@@ -36,6 +36,8 @@ BOOL LoadMatrix( CHAR *FileName )
   return TRUE;
 }
 
+VOID Detg ( VOID );
+
 /*Main numbers func */
 VOID Store( VOID )
 {
@@ -54,27 +56,29 @@ VOID Store( VOID )
     fprintf(F, "\n");
   }
 
-  fprintf(F, "%lf", det);
+  fprintf(F, "%lf", Detg());
   fclose(F);
 }
 
-VOID Detg ( VOID )
+DOUBLE Detg( VOID )
 {
-  INT coef, i, k;
+  INT i, j;
+  DOUBLE kaef, det = 0;
 
-  for (k = i + 1; k < N; k++)
-  {
-    coef = A[k][i] / A[i][i];
-    for (p = i; p < N; p++)
-      A[k][p] -= A[i][p] * coef;
-  }
+  for (i = 1; i < N; i++)
+    for (j = i + 1; j < N; j++)
+    {
+    kaef = A[i][j] / A[i][i];
+    A[i][j] = A[i + 1][j] - A[i][j] * kaef;
+    }
+    det *= A[i][i];
+
+    return det;
 }
 
 VOID main( VOID )
 {
-  INT i;
 
   LoadMatrix("IN1.TXT");
-
   Store();
 }
