@@ -111,7 +111,7 @@ __inline VEC VecNormalize( VEC V )
 
   if (len == 0 || len == 1)
     return V;
-  return VecDivNum(V, len);
+  return VecDivNum(V, sqrt(len));
 } /* End of 'VecNormalize' function */
 
 /* Transformation point function.*/
