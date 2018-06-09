@@ -65,6 +65,7 @@ LRESULT CALLBACK MyWindowFunc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
   INT R = 1;
   MINMAXINFO *minmax;
   PAINTSTRUCT ps;
+  static vg6PRIM Pr;
 
   switch (Msg)
   {
