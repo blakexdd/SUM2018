@@ -3,44 +3,161 @@
  * DATE: 06.06.2018
  * PURPOSE: For 3d graphics in the furute
  */
-#include <windows.h>
-#include <stdio.h>
-#include <time.h>
+#include <stdlib.h>
 #include <math.h>
+#include <time.h>
+#include <Windows.h>
+
 
 #define WND_CLASS_NAME "My window class"
-#define M_PI       3.14159265358979323846
 
-LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam );
+#define N 8
+#define M 15
+typedef DOUBLE DBL;
+#define PI       3.14159265358979323846
 
-VOID DrawSphere( HDC hDc, INT x, INT y, INT R)
+typedef struct
 {
-  INT i, x1, y1, N = 1000, M = 1000, j, tet = 0, alpha = 0;
-  for (j = 0; j < M;j++)
+  DBL X, Y, Z; 
+} VEC;
+
+static VEC G[N][M];
+
+VEC VecSet(DBL X, DBL Y, DBL Z)
+{
+  VEC r = { X, Y, Z };
+    return r;
+}
+
+VEC VecRotateZ(VEC V, DBL AngeInDegree)
+{
+  DBL a = AngeInDegree * PI / 180, si = sin(a), co = cos(a);
+
+  return VecSet(V.X * co - V.Y * si, V.X * si + V.Y * co, V.Z);
+}
+
+VEC VecRotateY(VEC V, DBL AngeInDegree)
+{
+  DBL a = AngeInDegree * PI / 180, si = sin(a), co = cos(a);
+
+  return VecSet(V.Z * si + V.X * co, V.Y, V.Z * co - V.X * si);
+} 
+
+VOID SphereEval(VOID)
+{
+  INT i, j;
+  DBL t = clock() / (DBL)CLOCKS_PER_SEC;
+
+  for (i = 0; i < N; i++)
   {
-    tet += j * M_PI / M;
-    for (i = 0; i < N; i++) 
+    DBL theta = i * PI / (N - 0), sit = sin(theta), cot = cos(theta);
+    for (j = 0; j < M; j++)
     {
-      alpha += i * 2 * M_PI / N;
-      x1 = x + R * sin(tet) * cos(alpha);
-      y1 = y - R * sin(tet) * sin(alpha);
-      SetPixel(hDc, x1, y1, RGB(255, 0, 0));
+      DBL phy = j * 2 * PI / (M - 1), sip = sin(phy), cop = cos(phy);
+      G[i][j] = VecSet(sip * sit, cot, cop * sit);
     }
   }
 }
 
-INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine, INT ShowCmd )
+VOID SphereDraw(HDC hDC, INT X0, INT Y0, INT R)
 {
-  WNDCLASS wc;
+  INT i, j;
+  DBL t = clock() / (DBL)CLOCKS_PER_SEC;
+  static POINT P[N][M];
+
+  for (i = 0; i < N; i++)
+    for (j = 0; j < M; j++)
+    {
+      VEC r = VecRotateY(VecRotateZ(G[i][j], 60 * t), 30 * t);
+
+      P[i][j].x = (INT)(X0 + R * r.X);
+      P[i][j].y = (INT)(Y0 - R * r.Y);
+
+      SelectObject(hDC, GetStockObject(DC_PEN));
+      SetDCPenColor(hDC, RGB(255, 0, 0));
+      SetPixel(hDC, P[i][j].x, P[i][j].y, RGB(255, 0, 0));
+    }  
+
+  SelectObject(hDC, GetStockObject(DC_PEN));
+  SetDCPenColor(hDC, RGB(200, 200, 200)); 
+
+  for (i = 1; i < N - 1; i++)
+  {
+    for (j = 0; j < M - 1; j++)
+    {
+      POINT pnts[4];
+
+      pnts[0] = P[i][j];
+      pnts[1] = P[i][j + 1];
+      pnts[2] = P[i + 1][j + 1];
+      pnts[3] = P[i + 1][j];
+
+      if ((pnts[0].x - pnts[1].x) * (pnts[0].y + pnts[1].y) +
+          (pnts[1].x - pnts[2].x) * (pnts[1].y + pnts[2].y) +
+          (pnts[2].x - pnts[3].x) * (pnts[2].y + pnts[3].y) +
+          (pnts[3].x - pnts[0].x) * (pnts[3].y + pnts[0].y) < 0)
+        Polygon(hDC, pnts, 4);
+    }      
+  }
+  SelectObject(hDC, GetStockObject(NULL_BRUSH));
+  SetDCPenColor(hDC, RGB(0, 0, 0));
+
+  for (i = 1; i < N - 1; i++)
+  {
+    for (j = 0; j < M - 1; j++)
+    {
+      POINT pnts[4];
+
+      pnts[0] = P[i][j];
+      pnts[1] = P[i][j + 1];
+      pnts[2] = P[i + 1][j + 1];
+      pnts[3] = P[i + 1][j];
+
+      if ((pnts[0].x - pnts[1].x) * (pnts[0].y + pnts[1].y) +
+          (pnts[1].x - pnts[2].x) * (pnts[1].y + pnts[2].y) +
+          (pnts[2].x - pnts[3].x) * (pnts[2].y + pnts[3].y) +
+          (pnts[3].x - pnts[0].x) * (pnts[3].y + pnts[0].y) > 0)
+      {
+        SelectObject(hDC, GetStockObject(DC_BRUSH));
+        SetDCBrushColor(hDC, RGB(255, 0, 0));
+        Polygon(hDC, pnts, 4);
+      }
+    }
+  }
+/*
+
+    for (i = 0; i < N; i++)
+    {
+      MoveToEx(hDC, P[i][0].x, P[i][0].y, NULL);
+      SetDCPenColor(hDC, RGB(255, 0, 0));
+      for (j = 1; j < M; j++)
+        LineTo(hDC, P[i][j].x, P[i][j].y);
+    }
+    for (j = 0; j < M - 1; j++)
+    {
+      MoveToEx(hDC, P[0][j].x, P[0][j].y, NULL);
+      SetDCPenColor(hDC, RGB(255, 0, 0));
+      for (i = 1; i < N; i++)
+        LineTo(hDC, P[i][j].x, P[i][j].y);
+    }     */
+}
+
+
+LRESULT CALLBACK MyWindowFunc(HWND hWnd, UINT Msg,
+                              WPARAM wParam, LPARAM lParam);
+
+INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine, INT ShowCmd)
+{
   HWND hWnd;
   MSG msg;
+  WNDCLASS wc;
 
   wc.style = CS_VREDRAW | CS_HREDRAW;
   wc.cbClsExtra = 0;
   wc.cbWndExtra = 0;
   wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
-  wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-  wc.hIcon = LoadIcon(NULL, IDI_ERROR);
+  wc.hCursor = LoadCursor(NULL, IDC_HAND);
+  wc.hIcon = LoadIcon(NULL, IDI_EXCLAMATION);
   wc.lpszMenuName = NULL;
   wc.hInstance = hInstance;
   wc.lpfnWndProc = MyWindowFunc;
@@ -48,9 +165,10 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine,
 
   if (!RegisterClass(&wc))
   {
-    MessageBox(NULL, "Error register window class", "ERROR", MB_OK);
+    MessageBox(NULL, "Eror register window class", "ERROR", MB_OK | MB_ICONERROR);
     return 0;
   }
+
   hWnd =
     CreateWindow(WND_CLASS_NAME,
     "SPHERE",
@@ -61,78 +179,79 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine,
     NULL,
     hInstance,
     NULL);
-  
-  ShowWindow(hWnd, SW_SHOWNORMAL);
+
+  ShowWindow(hWnd, ShowCmd);
   UpdateWindow(hWnd);
+  SetFocus(hWnd);
 
   while (GetMessage(&msg, NULL, 0, 0))
-  {
-    TranslateMessage(&msg);
     DispatchMessage(&msg);
-  }
-  return msg.wParam;
-}
 
-LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
+  return 1;
+}
+ 
+LRESULT CALLBACK MyWindowFunc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
-  HDC hDc;
+  HDC hDC;
   PAINTSTRUCT ps;
-  BITMAP bm;
-  SIZE s;
-  SYSTEMTIME tm;
-  DOUBLE sec, min, hour, a;
-  MINMAXINFO *minmax;
-  static INT W, H, len;
-  static HDC hMemDC;
-  static HBITMAP hBm;
-  static HFONT hFnt;
-  static CHAR Buf[1000];
+  static HBITMAP hBmFrame;
+  static HDC hMemDCFrame;
+  static INT W, H;
 
   switch (Msg)
   {
   case WM_CREATE:
-    hDc = GetDC(hWnd);
-    hMemDC = CreateCompatibleDC(hDc);
-    ReleaseDC(hWnd, hDc);
+    SetTimer(hWnd, 47, 3, NULL);
+    hDC = GetDC(hWnd);
+    hMemDCFrame = CreateCompatibleDC(hDC);
+    ReleaseDC(hWnd, hDC);
 
-    SetTimer(hWnd, 47, 30, NULL);
+    SphereEval();
     return 0;
+
   case WM_SIZE:
-    H = HIWORD(lParam);
     W = LOWORD(lParam);
+    H = HIWORD(lParam);
 
-    if (hBm != NULL)
-      DeleteObject(hBm);
+    if (hBmFrame != NULL)
+      DeleteObject(hBmFrame);
 
-    hDc = GetDC(hWnd);
-    hBm = CreateCompatibleBitmap(hDc, W, H);
-    ReleaseDC(hWnd, hDc);
+    hDC = GetDC(hWnd);
+    hBmFrame = CreateCompatibleBitmap(hDC, W, H);
+    ReleaseDC(hWnd, hDC);
 
-    SelectObject(hMemDC, hBm);
+    SelectObject(hMemDCFrame, hBmFrame);
+    SendMessage(hWnd, WM_TIMER, 0, 0);
     return 0;
   case WM_TIMER:
-    /* Font */
-    SelectObject(hMemDC, GetStockObject(DC_BRUSH));
-    SetDCBrushColor(hMemDC, RGB(0, 0, 0));
-    Rectangle(hMemDC, 0, 0, W, H);
 
-    DrawSphere(hMemDC, W / 2, H / 2, 200);
-    /* Clear */
-    InvalidateRect(hWnd, NULL, FALSE);
+    SelectObject(hMemDCFrame, GetStockObject(DC_PEN));
+    SelectObject(hMemDCFrame, GetStockObject(DC_BRUSH));
+    SetDCPenColor(hMemDCFrame, RGB(0, 0, 0));
+    SetDCBrushColor(hMemDCFrame, RGB(255, 255, 255));
 
+    Rectangle(hMemDCFrame, 0, 0, W, H);
+
+    SphereEval();
+    SphereDraw(hMemDCFrame, W / 2, H / 2, 400);
+
+    InvalidateRect(hWnd, NULL, TRUE);
     return 0;
-  case WM_PAINT:
-    /*Udating front */
-    hDc = BeginPaint(hWnd, &ps);
-    BitBlt(hDc, 0, 0, W, H, hMemDC, 0, 0, SRCCOPY);
-    EndPaint(hWnd, &ps);
-    return 0;
+
   case WM_ERASEBKGND:
     return 1;
+
+  case WM_PAINT:
+    hDC = BeginPaint(hWnd, &ps);
+
+    BitBlt(hDC, 0, 0, W, H, hMemDCFrame, 0, 0, SRCCOPY);
+
+    EndPaint(hWnd, &ps);
+    return 0;
+
   case WM_DESTROY:
-    DeleteObject(hBm);
-    DeleteObject(hFnt);
-    DeleteDC(hMemDC);
+    DeleteObject(hBmFrame);
+    DeleteDC(hMemDCFrame);
     PostMessage(hWnd, WM_QUIT, 0, 0);
     KillTimer(hWnd, 47);
     return 0;
