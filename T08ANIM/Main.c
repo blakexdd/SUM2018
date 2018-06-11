@@ -5,6 +5,7 @@
  */
 
 #include "rnd/rnd.h"
+#include "unit.h"
 
 #define N 8
 #define M 18
@@ -70,10 +71,11 @@ LRESULT CALLBACK MyWindowFunc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
   {
   case WM_CREATE:
     VG6_RndInit(hWnd);
-    VG6_RndPrimCreate(&Pr, 3, 3);
+    VG6_RndPrimLoad(&Pr, "IN1.txt");
+   /* VG6_RndPrimCreate(&Pr, 3, 3);
     Pr.V[0].P = VecSet(0, 0, 0);
     Pr.V[1].P = VecSet(1, 0, 0);
-    Pr.V[2].P = VecSet(0, 1, 0);
+    Pr.V[2].P = VecSet(0, 1, 0); */
     SetTimer(hWnd, 47, 3, NULL);
     return 0;
   case WM_SIZE:
@@ -88,6 +90,7 @@ LRESULT CALLBACK MyWindowFunc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
     VG6_RndStart();
     SelectObject(VG6_hDCRndFrame, GetStockObject(DC_PEN));
     SetDCPenColor(VG6_hDCRndFrame, RGB(0, 0, 0));
+    VG6_RndCamSet(VecSet(8 * sin((DBL)clock() / CLOCKS_PER_SEC), 24.8, 24.8), VecSet(0, 0, -30), VecSet(0, 1, 0));
     VG6_RndPrimDraw(&Pr, MatrIdentity());
     VG6_RndEnd();
     InvalidateRect(hWnd, NULL, FALSE);

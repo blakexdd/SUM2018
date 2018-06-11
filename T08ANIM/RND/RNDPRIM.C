@@ -15,7 +15,7 @@ BOOL VG6_RndPrimCreate( vg6PRIM *Pr, INT NoofV, INT NoofI )
   memset(Pr, 0, sizeof(vg6PRIM));
 
   /* Calculate memory size for primitive data */
-  size = sizeof(vg6VERTEX) * NoofV + sizeof(INT) * NoofI;
+  size = sizeof(vg6VERTEX) * NoofV + sizeof(INT) * NoofI * 3;
 
   /* Allocate memory */
   Pr->V = malloc(size);
@@ -42,7 +42,7 @@ VOID VG6_RndPrimFree( vg6PRIM *Pr )
   if (Pr->V != NULL)
     free(Pr->V);
   /* Set all primitive data fields to 0 */
-  memset(Pr, 0, sizeof(vg6PRIM));
+  memset(Pr->V, 0, sizeof(vg6PRIM));
 } /* End of 'VG6_RndPrimFree' function */
 
 VOID VG6_RndPrimDraw( vg6PRIM *Pr, MATR World )
@@ -52,7 +52,7 @@ VOID VG6_RndPrimDraw( vg6PRIM *Pr, MATR World )
   MATR M = MatrMulMatr(MatrMulMatr(Pr->Trans, World), VG6_RndMatrVP);
 
   /* Allocate memory for projections */
-  pnts = malloc(sizeof(POINT) * Pr->NumOfV);
+  pnts = malloc(sizeof(POINT) * Pr->NumOfV); //???
   if (pnts == NULL)
     return;
 
@@ -72,9 +72,9 @@ VOID VG6_RndPrimDraw( vg6PRIM *Pr, MATR World )
   {
     POINT p[3];
 
-    p[0] = pnts[i];
-    p[1] = pnts[i + 1];
-    p[2] = pnts[i + 2];
+    p[0] = pnts[Pr->I[i]];
+    p[1] = pnts[Pr->I[i + 1]];
+    p[2] = pnts[Pr->I[i + 2]];
     Polygon(VG6_hDCRndFrame, p, 3);
   }
 
@@ -98,7 +98,7 @@ BOOL VG6_RndPrimLoad( vg6PRIM *Pr, CHAR *FileName )
     if (Buf[0] == 'v' && Buf[1] == ' ')
       nv++;
     else if (Buf[0] == 'f' && Buf[1] == ' ')
-      nf++;
+      nf+=3;
 
   /* Create primitive */
   if (!VG6_RndPrimCreate(Pr, nv, nf))

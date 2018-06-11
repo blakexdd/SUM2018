@@ -3,6 +3,9 @@
  * DATE: 08.06.2018
  * PURPOSE: Prototipes
  */
+#ifndef __RND_H_
+#define __RND_H_
+
 #include "../def.h"
 
 typedef struct tagvg6VERTEX
@@ -44,3 +47,4 @@ BOOL VG6_RndPrimCreate( vg6PRIM *Pr, INT NoofV, INT NoofI );
 VOID VG6_RndPrimFree( vg6PRIM *Pr );
 VOID VG6_RndPrimDraw( vg6PRIM *Pr, MATR World );
 BOOL VG6_RndPrimLoad( vg6PRIM *Pr, CHAR *FileName );
+#endif

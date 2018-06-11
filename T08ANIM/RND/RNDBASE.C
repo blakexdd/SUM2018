@@ -12,7 +12,6 @@ VOID VG6_RndInit( HWND hWnd )
   hDC = GetDC(VG6_hWndRnd);
   VG6_hDCRndFrame = CreateCompatibleDC(hDC);
   ReleaseDC(VG6_hWndRnd, hDC);
-  VG6_RndCamSet(VecSet(8, 8, 0), VecSet(0, 0, -30), VecSet(0, 1, 0));
 }
 
 VOID VG6_RndClose( VOID )
@@ -68,7 +67,7 @@ VOID VG6_RndProjSet( VOID )
   else
     ratio_y *= (DBL)VG6_RndFrameH / VG6_RndFrameW;
 
-  VG6_RndMatrProj = MatrViewFrustum(-ratio_x, ratio_x, -ratio_y, ratio_y,
+  VG6_RndMatrProj = MatrViewFrustum(-ratio_x, ratio_x, ratio_y, -ratio_y,
     VG6_RndProjDist, VG6_RndProjFarClip);
   VG6_RndMatrVP = MatrMulMatr(VG6_RndMatrView, VG6_RndMatrProj);
 } 
