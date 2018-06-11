@@ -64,7 +64,7 @@ VOID VG6_RndPrimDraw( vg6PRIM *Pr, MATR World )
 
     /* Convert from World to NDC */
     pnts[i].x = (p.X + 1) * VG6_RndFrameW / 2;
-    pnts [i].y = (-p.Y + 1) * VG6_RndFrameH / 2;
+    pnts[i].y = (-p.Y + 1) * VG6_RndFrameH / 2;
   }
 
   /* Draw all triangles */
@@ -72,9 +72,9 @@ VOID VG6_RndPrimDraw( vg6PRIM *Pr, MATR World )
   {
     POINT p[3];
 
-    p[0] = pnts[Pr->I[i]];
-    p[1] = pnts[Pr->I[i + 1]];
-    p[2] = pnts[Pr->I[i + 2]];
+    p[0] = pnts[i];
+    p[1] = pnts[i + 1];
+    p[2] = pnts[i + 2];
     Polygon(VG6_hDCRndFrame, p, 3);
   }
 

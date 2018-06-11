@@ -62,7 +62,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine, 
 LRESULT CALLBACK MyWindowFunc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
   HDC hDC;
-  INT R = 1;
   MINMAXINFO *minmax;
   PAINTSTRUCT ps;
   static vg6PRIM Pr;
@@ -71,6 +70,10 @@ LRESULT CALLBACK MyWindowFunc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
   {
   case WM_CREATE:
     VG6_RndInit(hWnd);
+    VG6_RndPrimCreate(&Pr, 3, 3);
+    Pr.V[0].P = VecSet(0, 0, 0);
+    Pr.V[1].P = VecSet(1, 0, 0);
+    Pr.V[2].P = VecSet(0, 1, 0);
     SetTimer(hWnd, 47, 3, NULL);
     return 0;
   case WM_SIZE:
@@ -83,11 +86,15 @@ LRESULT CALLBACK MyWindowFunc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
     return 0;
   case WM_TIMER:
     VG6_RndStart();
+    SelectObject(VG6_hDCRndFrame, GetStockObject(DC_PEN));
+    SetDCPenColor(VG6_hDCRndFrame, RGB(0, 0, 0));
+    VG6_RndPrimDraw(&Pr, MatrIdentity());
     VG6_RndEnd();
     InvalidateRect(hWnd, NULL, FALSE);
     return 0;
   case WM_PAINT:
     hDC = BeginPaint(hWnd, &ps);
+    hDC = GetDC(hWnd);
     VG6_RndCopyFrame(hDC);
     EndPaint(hWnd, &ps);
     return 0;
@@ -104,6 +111,7 @@ LRESULT CALLBACK MyWindowFunc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
       SendMessage(hWnd, WM_DESTROY, 0, 0);
     return 0;
   case WM_DESTROY:
+    VG6_RndPrimFree(&Pr);
     VG6_RndClose();
     PostMessage(hWnd, WM_QUIT, 0, 0);
     KillTimer(hWnd, 47);
