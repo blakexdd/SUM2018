@@ -4,51 +4,50 @@
  */
 #ifndef __ANIM_H_
 #define __ANIM_H_
+#include "rnd/rnd.h"
 
 #define UNIT_BASE_FIELDS \
-  VOID (*Init)( UNIT *Uni, ANIM *Ani );      \
-  VOID (*Close)( UNIT *Uni, ANIM *Ani );     \
-  VOID (*Response)( UNIT *Uni, ANIM *Ani );  \
-  VOID (*Render)( UNIT *Uni, ANIM *Ani )
+  VOID (*VG6_UnitInit)( vg6UNIT *Uni, vg6ANIM *Ani );      \
+  VOID (*VG6_UnitClose)( vg6UNIT *Uni, vg6ANIM *Ani );     \
+  VOID (*VG6_UnitResponse)( vg6UNIT *Uni, vg6ANIM *Ani );  \
+  VOID (*VG6_UnitRender)( vg6UNIT *Uni, vg6ANIM *Ani )
+
 
 #define VG6_MAX_UNITS 3000
-
-#include "rnd/rnd.h"
 
 typedef struct tagvg6UNIT vg6UNIT;
 typedef struct tagvg6ANIM
 {
-  HWND hWnd;
-  HDC hDC;
-  INT W, H;
-  vg6UNIT *Units[VG6_MAX_UNITS];
-  INT NumOfUnits;
-
+  HWND hWnd;                     /* Work window handle */
+  HDC hDC;                       /* Memory device context */
+  HBITMAP Bm;
+  INT W, H;                      /* Frame size */
+  vg6UNIT *Units[VG6_MAX_UNITS]; /* Array of animation units */
+  INT NumOfUnits;                /* Animation units array size */
 } vg6ANIM;
- typedef struct tagvg6UNIT UNIT;
+
+extern vg6ANIM VG6_Anim;
+extern DBL VG6_RndProjSize;
+extern DBL VG6_RndProjDist;
+extern DBL VG6_RndProjFarClip;
+extern MATR VG6_RndMatrView;
+extern MATR VG6_RndMatrProj;
+extern MATR VG6_RndMatrVP;
+
 struct tagvg6UNIT
 {
   UNIT_BASE_FIELDS;
 };
 
-typedef struct tagvg6UNIT UNIT;
-struct tagvg6UNIT
-{
-  VOID (*Init)( UNIT *Uni, ANIM *Ani );
-  VOID (*Close)( UNIT *Uni, ANIM *Ani );
-  VOID (*Response)( UNIT *Uni, ANIM *Ani );
-  VOID (*Render)( UNIT *Uni, ANIM *Ani );
-};
+extern vg6ANIM VG6_Anim;
 
-extern UNIT *Units[VG6_MAX_UNITS];
-extern INT NumOfUnits;
+VOID VG6_AnimInit( HWND hWnd );
+VOID VG6_AnimStart( VOID );
+VOID VG6_AnimClose( VOID );
+VOID VG6_AnimResize( INT W, INT H );
+VOID VG6_AnimCopyFrame( HDC hDC );
+VOID VG6_AnimRender( VOID );
+VOID VG6_AnimUnitAdd( vg6UNIT *Uni );
 
-
-
-VOID AnimInit(HWND hWnd);
-VOID AnimClose();
-VOID AnimResize(INT W, INT H);
-VOID AnimCopyFrame(HDC hDC);
-VOID AnimRender();
-VOID VG6_AnimAddUnit( vg6UNIT *Uni );
+vg6UNIT * VG6_AnimUnitCreate( INT Size );
 #endif

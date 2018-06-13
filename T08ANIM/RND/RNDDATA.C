@@ -3,12 +3,7 @@
  * DATE: 08.06.2018
  * PURPOSE: Global variables
  */
-#include "rnd.h"
-
-HWND VG6_hWndRnd;
-HDC VG6_hDCRndFrame;
-HBITMAP VG6_hBmRndFrame;
-INT VG6_RndFrameW, VG6_RndFrameH;
+#include "../anim.h"
 
 DBL
   VG6_RndProjSize = 0.1,  /* Project plane fit square */

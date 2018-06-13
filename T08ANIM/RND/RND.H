@@ -3,16 +3,22 @@
  * DATE: 08.06.2018
  * PURPOSE: Prototipes
  */
-#ifndef __RND_H_
-#define __RND_H_
-
+#pragma once
 #include "../def.h"
-
+extern HWND VG6_hWndRn;
+extern HDC VG6_hDCRndFrame;
+extern HBITMAP VG6_hBmRndFrame;
+extern INT VG6_RndFrameW, VG6_RndFrameH;
+extern DBL VG6_RndProjSize;
+extern DBL VG6_RndProjDist;
+extern DBL VG6_RndProjFarClip;
+extern MATR VG6_RndMatrView;
+extern MATR VG6_RndMatrProj;
+extern MATR VG6_RndMatrVP;
 typedef struct tagvg6VERTEX
 {
   VEC P;  /* Vertex position */
 } vg6VERTEX;
-
 typedef struct tagvg6PRIM
 {
   vg6VERTEX *V; /* Vertex attributes array */
@@ -22,22 +28,9 @@ typedef struct tagvg6PRIM
   MATR Trans;   /* Additional transformation matrix */
 } vg6PRIM;
 
-extern HWND VG6_hWndRnd;
-extern HDC VG6_hDCRndFrame;
-extern HBITMAP VG6_hBmRndFrame;
-extern INT VG6_RndFrameW, VG6_RndFrameH;
-extern DBL
-  VG6_RndProjSize,  /* Project plane fit square */
-  VG6_RndProjDist,  /* Distance to project plane from viewer (near) */
-  VG6_RndProjFarClip;  /* Distance to project far clip plane (far) */
-extern MATR
-  VG6_RndMatrView, /* View coordinate system matrix */
-  VG6_RndMatrProj, /* Projection coordinate system matrix */
-  VG6_RndMatrVP;   /* Stored (View * Proj) matrix */
-
 VOID VG6_RndInit( HWND hWnd );
 VOID VG6_RndClose( VOID );
-VOID VG6_RndResize( INT w, INT h );
+VOID VG6_RndResize( INT W, INT H );
 VOID VG6_RndStart( VOID );
 VOID VG6_RndEnd( VOID );
 VOID VG6_RndCopyFrame( HDC hDC );
@@ -47,4 +40,3 @@ BOOL VG6_RndPrimCreate( vg6PRIM *Pr, INT NoofV, INT NoofI );
 VOID VG6_RndPrimFree( vg6PRIM *Pr );
 VOID VG6_RndPrimDraw( vg6PRIM *Pr, MATR World );
 BOOL VG6_RndPrimLoad( vg6PRIM *Pr, CHAR *FileName );
-#endif

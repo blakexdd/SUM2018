@@ -3,53 +3,40 @@
  * DATE: 08.06.2018
  */
 
-#include "anim.h"
+#include "unit.h"
 
-/* Unit initialization function.
- * ARGUMENTS:
- *   - self-pointer to unit object:
- *       vg6UNIT *Uni;
- *   - animation context:
- *       vg6ANIM *Ani;
- * RETURNS: None.
- */
+
 static VOID VG6_UnitInit( vg6UNIT *Uni, vg6ANIM *Ani )
 {
-} /* End of 'VG6_UnitInit' function */
 
-/* Unit deinitialization function.
- * ARGUMENTS:
- *   - self-pointer to unit object:
- *       vg6UNIT *Uni;
- *   - animation context:
- *       vg6ANIM *Ani;
- * RETURNS: None.
- */
+}
+
 static VOID VG6_UnitClose( vg6UNIT *Uni, vg6ANIM *Ani )
 {
-} /* End of 'VG6_UnitClose' function */
 
-/* Unit inter frame events handle function.
- * ARGUMENTS:
- *   - self-pointer to unit object:
- *       vg6UNIT *Uni;
- *   - animation context:
- *       vg6ANIM *Ani;
- * RETURNS: None.
- */
-static VOID VG6_UnitResponse( vg6UNIT *Uni, vg6ANIM *Ani );
+}
+
+static VOID VG6_UnitResponse( vg6UNIT *Uni, vg6ANIM *Ani )
 {
-} /* End of 'VG6_UnitResponse' function */
 
-/* Unit render function.
- * ARGUMENTS:
- *   - self-pointer to unit object:
- *       vg6UNIT *Uni;
- *   - animation context:
- *       vg6ANIM *Ani;
- * RETURNS: None.
- */
+}
+
 static VOID VG6_UnitRender( vg6UNIT *Uni, vg6ANIM *Ani )
 {
-} /* End of 'VG6_UnitRender' function */
+
+}
+
+vg6UNIT * VG6_AnimUnitCreate( INT Size )
+{
+  vg6UNIT *Uni;
+
+  if (Size < sizeof(vg6UNIT) || (Uni = malloc(Size)) == NULL)
+    return NULL;
+  memset(Uni, 0, Size);
+  Uni->VG6_UnitInit = VG6_UnitInit;
+  Uni->VG6_UnitClose = VG6_UnitClose;
+  Uni->VG6_UnitResponse = VG6_UnitResponse;
+  Uni->VG6_UnitRender = VG6_UnitRender;
+  return Uni;
+}
 

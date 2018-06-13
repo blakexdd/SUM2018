@@ -21,6 +21,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine, 
   WNDCLASS wc;
   HWND hWnd;
   MSG msg;
+  INT i;
 
   wc.style = CS_VREDRAW | CS_HREDRAW;
   wc.cbClsExtra = 0;
@@ -40,7 +41,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine, 
   }
   hWnd =
     CreateWindow(WND_CLASS_NAME,
-    "ANIME",
+    "Oniame",
     WS_OVERLAPPEDWINDOW,
     CW_USEDEFAULT, CW_USEDEFAULT,
     CW_USEDEFAULT, CW_USEDEFAULT,
@@ -52,34 +53,29 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine, 
   ShowWindow(hWnd, SW_SHOWMAXIMIZED);
   UpdateWindow(hWnd);
 
+    VG6_AnimUnitAdd(VG6_UnitCreateCow());
+
   while (GetMessage(&msg, NULL, 0, 0))
   {
     TranslateMessage(&msg);
     DispatchMessage(&msg);
   }
-  return msg.wParam;
+  return 1;
 } 
 
 LRESULT CALLBACK MyWindowFunc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
   HDC hDC;
-  MINMAXINFO *minmax;
   PAINTSTRUCT ps;
-  static vg6PRIM Pr;
 
   switch (Msg)
   {
   case WM_CREATE:
-    VG6_RndInit(hWnd);
-    VG6_RndPrimLoad(&Pr, "IN1.txt");
-   /* VG6_RndPrimCreate(&Pr, 3, 3);
-    Pr.V[0].P = VecSet(0, 0, 0);
-    Pr.V[1].P = VecSet(1, 0, 0);
-    Pr.V[2].P = VecSet(0, 1, 0); */
+    VG6_AnimInit(hWnd);
     SetTimer(hWnd, 47, 3, NULL);
     return 0;
   case WM_SIZE:
-    VG6_RndResize(LOWORD(lParam), HIWORD(lParam));
+    VG6_AnimResize(LOWORD(lParam), HIWORD(lParam));
     SendMessage(hWnd, WM_TIMER, 0, 0);
     return 0;
   case WM_KEYDOWN:
@@ -87,25 +83,14 @@ LRESULT CALLBACK MyWindowFunc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
       SendMessage(hWnd, WM_CLOSE, 0, 0);
     return 0;
   case WM_TIMER:
-    VG6_RndStart();
-    SelectObject(VG6_hDCRndFrame, GetStockObject(DC_PEN));
-    SetDCPenColor(VG6_hDCRndFrame, RGB(0, 0, 0));
-    VG6_RndCamSet(VecSet(8 * sin((DBL)clock() / CLOCKS_PER_SEC), 24.8, 24.8), VecSet(0, 0, -30), VecSet(0, 1, 0));
-    VG6_RndPrimDraw(&Pr, MatrIdentity());
-    VG6_RndEnd();
+    VG6_AnimRender();
     InvalidateRect(hWnd, NULL, FALSE);
     return 0;
   case WM_PAINT:
-    hDC = BeginPaint(hWnd, &ps);
-    hDC = GetDC(hWnd);
-    VG6_RndCopyFrame(hDC);
-    EndPaint(hWnd, &ps);
-    return 0;
-  case WM_GETMINMAXINFO:
-    minmax = (MINMAXINFO *)lParam;
-    minmax->ptMaxTrackSize.y =
-      GetSystemMetrics(SM_CYMAXTRACK) + GetSystemMetrics(SM_CYCAPTION) +
-      GetSystemMetrics(SM_CYBORDER) * 2 + 500;
+  hDC = BeginPaint(hWnd, &ps);
+  VG6_AnimCopyFrame(hDC);
+  EndPaint(hWnd, &ps);
+  return 0;
     return 0;
   case WM_ERASEBKGND:
     return 1;
@@ -114,8 +99,7 @@ LRESULT CALLBACK MyWindowFunc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
       SendMessage(hWnd, WM_DESTROY, 0, 0);
     return 0;
   case WM_DESTROY:
-    VG6_RndPrimFree(&Pr);
-    VG6_RndClose();
+    VG6_AnimClose();
     PostMessage(hWnd, WM_QUIT, 0, 0);
     KillTimer(hWnd, 47);
     return 0;

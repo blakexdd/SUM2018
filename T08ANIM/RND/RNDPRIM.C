@@ -5,16 +5,15 @@
  */
 #include <string.h>
 #include <stdlib.h>
-#include "rnd.h"
+#include <stdio.h>
+#include "../anim.h"
 
 BOOL VG6_RndPrimCreate( vg6PRIM *Pr, INT NoofV, INT NoofI )
 {
   INT size;
 
-  /* Set all primitive data fields to 0 */
   memset(Pr, 0, sizeof(vg6PRIM));
 
-  /* Calculate memory size for primitive data */
   size = sizeof(vg6VERTEX) * NoofV + sizeof(INT) * NoofI * 3;
 
   /* Allocate memory */
@@ -25,13 +24,10 @@ BOOL VG6_RndPrimCreate( vg6PRIM *Pr, INT NoofV, INT NoofI )
   /* Fill all allocated memory by 0 */
   memset(Pr->V, 0, size);
 
-  /* Set index array pointer */
   Pr->I = (INT *)(Pr->V + NoofV);
 
-  /* Store data sizes */
   Pr->NumOfV = NoofV;
   Pr->NumOfI = NoofI;
-  /* Set default transform (identity) */
   Pr->Trans = MatrIdentity();
 
   return TRUE;
@@ -42,40 +38,37 @@ VOID VG6_RndPrimFree( vg6PRIM *Pr )
   if (Pr->V != NULL)
     free(Pr->V);
   /* Set all primitive data fields to 0 */
-  memset(Pr->V, 0, sizeof(vg6PRIM));
+  memset(Pr, 0, sizeof(vg6PRIM));
 } /* End of 'VG6_RndPrimFree' function */
 
 VOID VG6_RndPrimDraw( vg6PRIM *Pr, MATR World )
 {
   INT i;
-  POINT *pnts; /* vertex projections */
+  POINT *pnts; 
   MATR M = MatrMulMatr(MatrMulMatr(Pr->Trans, World), VG6_RndMatrVP);
 
   /* Allocate memory for projections */
-  pnts = malloc(sizeof(POINT) * Pr->NumOfV); //???
+  pnts = malloc(sizeof(POINT) * Pr->NumOfV);
   if (pnts == NULL)
     return;
 
-  /* Project all vertices */
   for (i = 0; i < Pr->NumOfV; i++)
   {
-    /* Convert from World to NDC */
     VEC p = VecMulMatr4x4(Pr->V[i].P, M);
 
-    /* Convert from World to NDC */
-    pnts[i].x = (p.X + 1) * VG6_RndFrameW / 2;
-    pnts[i].y = (-p.Y + 1) * VG6_RndFrameH / 2;
+    pnts[i].x = (INT)((p.X + 1) * VG6_Anim.W / 2);
+    pnts [i].y = (INT)((-p.Y + 1) * VG6_Anim.H / 2);
   }
 
-  /* Draw all triangles */
   for (i = 0; i < Pr->NumOfI; i += 3)
   {
     POINT p[3];
 
+
     p[0] = pnts[Pr->I[i]];
     p[1] = pnts[Pr->I[i + 1]];
     p[2] = pnts[Pr->I[i + 2]];
-    Polygon(VG6_hDCRndFrame, p, 3);
+    Polygon(VG6_Anim.hDC, p, 3);
   }
 
   free(pnts);
@@ -95,22 +88,23 @@ BOOL VG6_RndPrimLoad( vg6PRIM *Pr, CHAR *FileName )
   /* Count vertex and facet quantity */
   nv = nf = 0;
   while (fgets(Buf, sizeof(Buf), F) != NULL)
+  {
     if (Buf[0] == 'v' && Buf[1] == ' ')
       nv++;
     else if (Buf[0] == 'f' && Buf[1] == ' ')
-      nf+=3;
+      nf += 3;
+  }
 
-  /* Create primitive */
   if (!VG6_RndPrimCreate(Pr, nv, nf))
   {
     fclose(F);
     return FALSE;
   }
 
-  /* Load primitive data */
   rewind(F);
   nv = nf = 0;
   while (fgets(Buf, sizeof(Buf), F) != NULL)
+  {
     if (Buf[0] == 'v' && Buf[1] == ' ')
     {
       DBL x, y, z;
@@ -130,8 +124,7 @@ BOOL VG6_RndPrimLoad( vg6PRIM *Pr, CHAR *FileName )
       Pr->I[nf++] = n2 - 1;
       Pr->I[nf++] = n3 - 1;
     }
+  }
   fclose(F);
   return TRUE;
-} /* End of 'VG6_RndPrimLoad' function */
-
-
+}

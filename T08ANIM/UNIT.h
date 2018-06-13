@@ -7,10 +7,6 @@
 
 #include "anim.h"
 
-typedef struct tagUNIT_COW UNIT_COW;
-struct tagUNIT_COW
-{
-  UNIT_BASE_FIELDS;
-  VEC Pos;
-  PRIM Cow;
-};
+vg6UNIT * VG6_UnitCreateCow( VOID );
+
+#endif
