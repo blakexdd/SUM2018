@@ -21,7 +21,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine, 
   WNDCLASS wc;
   HWND hWnd;
   MSG msg;
-  INT i;
 
   wc.style = CS_VREDRAW | CS_HREDRAW;
   wc.cbClsExtra = 0;

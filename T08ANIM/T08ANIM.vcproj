@@ -187,7 +187,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\U_COW.C"
+				RelativePath=".\TIMER.C"
 				>
 			</File>
 			<File
@@ -215,6 +215,14 @@
 				</File>
 				<File
 					RelativePath=".\RND\RNDPRIM.C"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Units"
+				>
+				<File
+					RelativePath=".\U_COW.C"
 					>
 				</File>
 			</Filter>

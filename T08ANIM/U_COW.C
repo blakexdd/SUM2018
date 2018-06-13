@@ -1,3 +1,7 @@
+/* FILE NAME: U_COW.C
+ * PROGRAMMER: VG6
+ * DATE: 08.06.2018
+ */
 #include <time.h>
 #include "unit.h"
 
