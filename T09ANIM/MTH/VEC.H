@@ -376,7 +376,7 @@ __inline MATR MatrInverse(MATR M)
   return r;
 }
 
-__inline MATR MatrView(VEC At, VEC Loc, VEC Up1)
+__inline MATR MatrView(VEC Loc, VEC At, VEC Up1)
 {
   VEC
     Dir = VecNormalize(VecSubVec(At, Loc)),
@@ -403,8 +403,8 @@ __inline MATR MatrViewFrustum(FLT l, FLT r, FLT b, FLT t, FLT n, FLT f)
     {
       { 2 * n / (r - l), 0, 0, 0 },
       { 0, 2 * n / (t - b), 0, 0 },
-      { (r + l) / (r - l), (t + b) / (t - b), -2 * n * f / (f + n), -1 },
-      { 0, 0, (f + n) / (f - n), 0 }
+      { (r + l) / (r - l), (t + b) / (t - b), -(f + n) / (f - n), -1 },
+      { 0, 0, -2 * n * f / (f + n), 0 }
     }
   };
 

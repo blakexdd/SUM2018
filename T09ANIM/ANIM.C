@@ -43,9 +43,8 @@ VOID VG6_AnimRender( VOID )
   
   for (i = 0; i < VG6_Anim.NumOfUnits; i++)
     VG6_Anim.Units[i]->Response(VG6_Anim.Units[i], &VG6_Anim);
-
-  VG6_RndStart();
   VG6_TimerResponse();
+  VG6_RndStart();
   for (i = 0; i < VG6_Anim.NumOfUnits; i++)
     VG6_Anim.Units[i]->Render(VG6_Anim.Units[i], &VG6_Anim);
   VG6_RndEnd();

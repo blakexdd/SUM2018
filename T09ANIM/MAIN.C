@@ -52,7 +52,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine, 
   ShowWindow(hWnd, SW_SHOWMAXIMIZED);
   UpdateWindow(hWnd);
 
-    VG6_AnimUnitAdd(VG6_UnitCreateCow());
+  VG6_AnimUnitAdd(VG6_UnitCreateCow());
     VG6_AnimUnitAdd(VG6_AnimUnitCtrl());
 
   while (1)
@@ -94,9 +94,9 @@ LRESULT CALLBACK MyWindowFunc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
     InvalidateRect(hWnd, NULL, FALSE);
     return 0;
   case WM_PAINT:
-  hDC = BeginPaint(hWnd, &ps);
-  VG6_AnimCopyFrame(hDC);
-  EndPaint(hWnd, &ps);
+    hDC = BeginPaint(hWnd, &ps);
+    VG6_AnimCopyFrame(hDC);
+    EndPaint(hWnd, &ps);
   return 0;
     return 0;
   case WM_ERASEBKGND:

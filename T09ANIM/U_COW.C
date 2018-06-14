@@ -31,7 +31,7 @@ static VOID VG6_UnitResponse( vg6UNIT_Cow *Uni, vg6ANIM *Ani )
 static VOID VG6_UnitRender( vg6UNIT_Cow *Uni, vg6ANIM *Ani )
 {
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  VG6_RndCamSet(VecSet(1115, 1115, 1115), VecSet(0, 0, 0), VecSet(0, 1, 0));
+  VG6_RndCamSet(VecSet(5, 5, 5), VecSet(0, 0, 0), VecSet(0, 1, 0));
   VG6_RndPrimDraw(&Uni->COW, MatrRotateY((FLT)clock() / 100));
 }
 
@@ -45,5 +45,6 @@ vg6UNIT * VG6_UnitCreateCow( VOID )
   Uni->Init = (VOID *)VG6_UnitInit;
   Uni->Response = (VOID *)VG6_UnitResponse;
   Uni->Render = (VOID *)VG6_UnitRender;
+  Uni->Close = (VOID *)VG6_UnitClose;
   return (vg6UNIT *)Uni;
 }

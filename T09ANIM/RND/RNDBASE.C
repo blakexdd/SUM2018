@@ -7,7 +7,7 @@
 
 VOID VG6_RndInit( HWND hWnd )
 {
- INT i;
+  INT i;
   PIXELFORMATDESCRIPTOR pfd = {0};
 
   /* Store window and context handles */

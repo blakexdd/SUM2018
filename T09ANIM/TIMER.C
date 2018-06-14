@@ -16,7 +16,7 @@ static UINT64
 
 VOID VG6_TimerInit( VOID )
 {
-   LARGE_INTEGER t;
+  LARGE_INTEGER t;
 
   QueryPerformanceFrequency(&t);
   TimePerSec = t.QuadPart;
