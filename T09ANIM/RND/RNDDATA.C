@@ -5,7 +5,7 @@
  */
 #include "../anim.h"
 
-DBL
+FLT
   VG6_RndProjSize = 0.1,  /* Project plane fit square */
   VG6_RndProjDist = 0.1,  /* Distance to project plane from viewer (near) */
   VG6_RndProjFarClip = 300;  /* Distance to project far clip plane (far) */

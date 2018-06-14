@@ -14,7 +14,7 @@ typedef struct tagvg6ANIM_Cow
 
 static VOID VG6_UnitInit( vg6UNIT_Cow *Uni, vg6ANIM *Ani )
 {
-  VG6_RndPrimLoad(&Uni->COW, "cow.object");
+  VG6_RndPrimLoad(&Uni->COW, "avent.obj");
   Uni->Pos = VecSet(0, 1, 0);
 }
 
@@ -25,13 +25,15 @@ static VOID VG6_UnitClose( vg6UNIT_Cow *Uni, vg6ANIM *Ani )
 
 static VOID VG6_UnitResponse( vg6UNIT_Cow *Uni, vg6ANIM *Ani )
 {
-
+  
 }
 
 static VOID VG6_UnitRender( vg6UNIT_Cow *Uni, vg6ANIM *Ani )
 {
-  VG6_RndCamSet(VecSet(0, 0, 0), VecSet(0, 30, -30), VecSet(0, -1, 0));
-  VG6_RndPrimDraw(&Uni->COW, MatrRotateY(clock() / 100.0));
+  VG6_RndCamSet(Uni->Camera, VecSet(0, 2, -5), VecSet(0, -1, 0));
+  glEnable(GL_POLYGON_SMOOTH);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  VG6_RndPrimDraw(&Uni->COW, MatrRotateY((FLT)clock() / 100));
 }
 
 vg6UNIT * VG6_UnitCreateCow( VOID )

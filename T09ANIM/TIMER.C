@@ -34,8 +34,8 @@ VOID VG6_TimerResponse( VOID )
 
   QueryPerformanceCounter(&t);
   /* Global time */
-  VG6_Anim.GlobalTime = (DBL)(t.QuadPart - StartTime) / TimePerSec;
-  VG6_Anim.GlobalDeltaTime = (DBL)(t.QuadPart - OldTime) / TimePerSec;
+  VG6_Anim.GlobalTime = (FLT)(t.QuadPart - StartTime) / TimePerSec;
+  VG6_Anim.GlobalDeltaTime = (FLT)(t.QuadPart - OldTime) / TimePerSec;
 
   /* Time with pause */
   if (VG6_Anim.IsPause)
@@ -46,13 +46,13 @@ VOID VG6_TimerResponse( VOID )
   else
   {
     VG6_Anim.DeltaTime = VG6_Anim.GlobalDeltaTime;
-    VG6_Anim.Time = (DBL)(t.QuadPart - PauseTime - StartTime) / TimePerSec;
+    VG6_Anim.Time = (FLT)(t.QuadPart - PauseTime - StartTime) / TimePerSec;
   }
   /* FPS */
   FrameCounter++;
   if (t.QuadPart - OldTimeFPS > TimePerSec)
   {
-    VG6_Anim.FPS = FrameCounter * TimePerSec / (DBL)(t.QuadPart - OldTimeFPS);
+    VG6_Anim.FPS = FrameCounter * TimePerSec / (FLT)(t.QuadPart - OldTimeFPS);
     OldTimeFPS = t.QuadPart;
     FrameCounter = 0;
   }

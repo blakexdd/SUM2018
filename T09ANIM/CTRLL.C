@@ -12,7 +12,7 @@ typedef struct tagvg6UNIT_Ctrl
 
 static VOID VG6_CtrlResponse( vg6UNIT_Ctrl *Uni, vg6ANIM *Ani )
 {
-
+  Uni->Camera = VecSet((Ani->Keys[VK_RIGHT]-Ani->Keys[VK_LEFT]), 0, 0);
 }
 
 static VOID VG6_UnitRenderCtrl( vg6UNIT_Ctrl *Uni, vg6ANIM *Ani )

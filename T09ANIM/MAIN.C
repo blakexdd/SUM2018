@@ -67,7 +67,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine, 
       VG6_AnimRender();
       VG6_AnimCopyFrame(VG6_Anim.hDC);
     }
-  return 1;
+  return 239;
 } 
 
 LRESULT CALLBACK MyWindowFunc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)

@@ -11,7 +11,8 @@
   VOID (*VG6_UnitInit)( vg6UNIT *Uni, vg6ANIM *Ani );      \
   VOID (*VG6_UnitClose)( vg6UNIT *Uni, vg6ANIM *Ani );     \
   VOID (*VG6_UnitResponse)( vg6UNIT *Uni, vg6ANIM *Ani );  \
-  VOID (*VG6_UnitRender)( vg6UNIT *Uni, vg6ANIM *Ani )
+  VOID (*VG6_UnitRender)( vg6UNIT *Uni, vg6ANIM *Ani );    \
+  VEC Camera
 
 #define VG6_GET_JOYSTICK_AXIS(A)\
   (2.0 * (ji.dw ## A ## pos - jc.w ## A ## min) / (jc.w ## A ## max - jc.w ## A ## min) - 1)
@@ -28,7 +29,7 @@ typedef struct tagvg6ANIM
   vg6UNIT *Units[VG6_MAX_UNITS]; /* Array of animation units */
   INT NumOfUnits;                /* Animation units array size */
 
-  DBL GlobalTime, GlobalDeltaTime, /* Global time and interframe interval */
+  FLT GlobalTime, GlobalDeltaTime, /* Global time and interframe interval */
     Time, DeltaTime,             /* Time with pause and interframe interval */
     FPS;                         /* Frames per second value */
   BOOL IsPause;                     /* Pause flag */
@@ -38,7 +39,7 @@ typedef struct tagvg6ANIM
   BYTE
     JBut[32], JButOld[32], JButClick[32]; /* Joystick button state */
   INT JPov;                               /* Joystick point-of-view control [-1,0..7] */
-  DBL
+  FLT
     JX, JY, JZ, JR;                       /* Joystick axes */
 
    BYTE Keys[256],
@@ -48,9 +49,9 @@ typedef struct tagvg6ANIM
 } vg6ANIM;
 
 extern vg6ANIM VG6_Anim;
-extern DBL VG6_RndProjSize;
-extern DBL VG6_RndProjDist;
-extern DBL VG6_RndProjFarClip;
+extern FLT VG6_RndProjSize;
+extern FLT VG6_RndProjDist;
+extern FLT VG6_RndProjFarClip;
 extern MATR VG6_RndMatrView;
 extern MATR VG6_RndMatrProj;
 extern MATR VG6_RndMatrVP;

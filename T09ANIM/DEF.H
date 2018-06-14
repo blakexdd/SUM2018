@@ -16,10 +16,6 @@
 #include <stdlib.h>
 
 #include "mth/vec.h"
-#include <gl/gl.h>
-#include <gl/glu.h>
-#pragma comment(lib, "opengl32")
-#pragma comment(lib, "glu32")
 /* 64-bit integer data types */
 typedef __int64 INT64;
 typedef unsigned __int64 UINT64;

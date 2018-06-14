@@ -32,6 +32,11 @@ VOID VG6_RndInit( HWND hWnd )
   glClearColor(0.3, 0.5, 0.7, 1);
   glEnable(GL_DEPTH_TEST);
 
+  if (glewInit() != GLEW_OK)
+    exit(0);
+  if (!(GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader))
+    exit(0);
+
 
   VG6_RndProjSet();
   VG6_RndCamSet(VecSet(20, 20, 20), VecSet(0, 0, 0), VecSet(0, 1, 0));
@@ -69,13 +74,13 @@ VOID VG6_RndCopyFrame( HDC hDC )
 
 VOID VG6_RndProjSet( VOID )
 {
-  DBL ratio_x, ratio_y;
+  FLT ratio_x, ratio_y;
 
   ratio_x = ratio_y = VG6_RndProjSize / 2;
   if (VG6_Anim.W > VG6_Anim.H) 
-    ratio_x *= (DBL)VG6_Anim.W / VG6_Anim.H;
+    ratio_x *= (FLT)VG6_Anim.W / VG6_Anim.H;
   else
-    ratio_y *= (DBL)VG6_Anim.H / VG6_Anim.W;
+    ratio_y *= (FLT)VG6_Anim.H / VG6_Anim.W;
 
   VG6_RndMatrProj = MatrViewFrustum(-ratio_x, ratio_x, -ratio_y, ratio_y,
     VG6_RndProjDist, VG6_RndProjFarClip);
