@@ -187,6 +187,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CTRLL.C"
+				>
+			</File>
+			<File
+				RelativePath=".\INPUT.C"
+				>
+			</File>
+			<File
 				RelativePath=".\TIMER.C"
 				>
 			</File>

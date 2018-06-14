@@ -53,6 +53,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine, 
   UpdateWindow(hWnd);
 
     VG6_AnimUnitAdd(VG6_UnitCreateCow());
+    //VG6_AnimUnitAdd(VG6_UnitCtrl());
 
   while (GetMessage(&msg, NULL, 0, 0))
   {
