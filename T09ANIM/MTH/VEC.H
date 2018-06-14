@@ -396,15 +396,15 @@ __inline MATR MatrView(VEC At, VEC Loc, VEC Up1)
   return m;
 }
 
-__inline MATR MatrViewFrustum(FLT r, FLT l, FLT t, FLT b, FLT n, FLT f)
+__inline MATR MatrViewFrustum(FLT l, FLT r, FLT b, FLT t, FLT n, FLT f)
 {
   MATR m =
   {
     {
       { 2 * n / (r - l), 0, 0, 0 },
       { 0, 2 * n / (t - b), 0, 0 },
-      { (r + l) / (r - l), (t + b) / (t - b), -(f + n) / (f - n), -1 },
-      { 0, 0, -2 * n * f / (f - n), 0 }
+      { (r + l) / (r - l), (t + b) / (t - b), -2 * n * f / (f + n), -1 },
+      { 0, 0, (f + n) / (f - n), 0 }
     }
   };
 

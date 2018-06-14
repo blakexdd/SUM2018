@@ -8,11 +8,10 @@
 #include <mmsystem.h>
 #pragma comment(lib, "winmm")
 #define UNIT_BASE_FIELDS \
-  VOID (*VG6_UnitInit)( vg6UNIT *Uni, vg6ANIM *Ani );      \
-  VOID (*VG6_UnitClose)( vg6UNIT *Uni, vg6ANIM *Ani );     \
-  VOID (*VG6_UnitResponse)( vg6UNIT *Uni, vg6ANIM *Ani );  \
-  VOID (*VG6_UnitRender)( vg6UNIT *Uni, vg6ANIM *Ani );    \
-  VEC Camera
+  VOID (*Init)( vg6UNIT *Uni, vg6ANIM *Ani );      \
+  VOID (*Close)( vg6UNIT *Uni, vg6ANIM *Ani );     \
+  VOID (*Response)( vg6UNIT *Uni, vg6ANIM *Ani );  \
+  VOID (*Render)( vg6UNIT *Uni, vg6ANIM *Ani )
 
 #define VG6_GET_JOYSTICK_AXIS(A)\
   (2.0 * (ji.dw ## A ## pos - jc.w ## A ## min) / (jc.w ## A ## max - jc.w ## A ## min) - 1)

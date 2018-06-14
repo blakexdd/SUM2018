@@ -5,17 +5,25 @@
 
 #include "unit.h"
 
-typedef struct tagvg6UNIT_Ctrl
+typedef struct tagvg6UNIT_CTRL
 {
   UNIT_BASE_FIELDS;
-}vg6UNIT_Ctrl;
+  VEC Camera;
+} vg6UNIT_CTRL;
 
-static VOID VG6_CtrlResponse( vg6UNIT_Ctrl *Uni, vg6ANIM *Ani )
+static VOID VG6_UnitInit( vg6UNIT_CTRL *Uni, vg6ANIM *Ani )
 {
-  Uni->Camera = VecSet((Ani->Keys[VK_RIGHT]-Ani->Keys[VK_LEFT]), 0, 0);
+  Uni->Camera = VecSet(8, 8, 8);
+  VG6_RndCamSet(Uni->Camera, VecSet(0, 2, -5), VecSet(0, -1, 0));
 }
 
-static VOID VG6_UnitRenderCtrl( vg6UNIT_Ctrl *Uni, vg6ANIM *Ani )
+static VOID VG6_UnitResponse( vg6UNIT_CTRL *Uni, vg6ANIM *Ani )
+{
+  Uni->Camera = VectorTransform(Uni->Camera, MatrRotateY((Ani->Keys[VK_RIGHT] - Ani->Keys[VK_LEFT]) * Ani->DeltaTime * 30));
+  VG6_RndCamSet(Uni->Camera, VecSet(0, 2, -5), VecSet(0, -1, 0));
+}
+
+static VOID VG6_UnitRender( vg6UNIT_CTRL *Uni, vg6ANIM *Ani )
 {
   static CHAR Buf[1024];
 
@@ -25,12 +33,13 @@ static VOID VG6_UnitRenderCtrl( vg6UNIT_Ctrl *Uni, vg6ANIM *Ani )
 
 vg6UNIT * VG6_AnimUnitCtrl( VOID )
 {
-  vg6UNIT_Ctrl *Uni;
+  vg6UNIT_CTRL *Uni;
 
-  if ((Uni = (vg6UNIT_Ctrl *)VG6_AnimUnitCreate(sizeof(vg6UNIT_Ctrl))) == NULL)
+  if ((Uni = (vg6UNIT_CTRL *)VG6_AnimUnitCreate(sizeof(vg6UNIT_CTRL))) == NULL)
     return NULL;
   /* Setup unit methods */
-  Uni->VG6_UnitResponse  = (VOID *)VG6_CtrlResponse;
-  Uni->VG6_UnitRender = (VOID *)VG6_UnitRenderCtrl;
+  Uni->Init  = (VOID *)VG6_UnitInit;
+  Uni->Response  = (VOID *)VG6_UnitResponse;
+  Uni->Render = (VOID *)VG6_UnitRender;
   return (vg6UNIT *)Uni;
-}  
+}

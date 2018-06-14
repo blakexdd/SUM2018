@@ -33,10 +33,10 @@ vg6UNIT * VG6_AnimUnitCreate( INT Size )
   if (Size < sizeof(vg6UNIT) || (Uni = malloc(Size)) == NULL)
     return NULL;
   memset(Uni, 0, Size);
-  Uni->VG6_UnitInit = VG6_UnitInit;
-  Uni->VG6_UnitClose = VG6_UnitClose;
-  Uni->VG6_UnitResponse = VG6_UnitResponse;
-  Uni->VG6_UnitRender = VG6_UnitRender;
+  Uni->Init = VG6_UnitInit;
+  Uni->Close = VG6_UnitClose;
+  Uni->Response = VG6_UnitResponse;
+  Uni->Render = VG6_UnitRender;
   return Uni;
 }
 

@@ -187,10 +187,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CTRLL.C"
-				>
-			</File>
-			<File
 				RelativePath=".\INPUT.C"
 				>
 			</File>
@@ -229,6 +225,10 @@
 			<Filter
 				Name="Units"
 				>
+				<File
+					RelativePath=".\CTRLL.C"
+					>
+				</File>
 				<File
 					RelativePath=".\U_COW.C"
 					>
