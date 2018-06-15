@@ -100,17 +100,22 @@ VOID VG6_RndPrimFree( vg6PRIM *Pr )
  */
 VOID VG6_RndPrimDraw( vg6PRIM *Pr, MATR World )
 {
-  INT gl_prim_type;
-  MATR M = MatrMulMatr(MatrMulMatr(Pr->Trans, World), VG6_RndMatrVP);
-
-  /* Set transform matrix */
-  glLoadMatrixf(M.M[0]);
+  INT gl_prim_type, loc, ProgId;
+  MATR WVP = MatrMulMatr(World, MatrMulMatr(VG6_RndMatrView, VG6_RndMatrProj));
+  glLoadMatrixf(WVP.M[0]);
 
   glEnable(GL_PRIMITIVE_RESTART);
   glPrimitiveRestartIndex(-1);
+  ProgId = VG6_RndMtlApply(Pr->MtlNo);
+
+  glUseProgram(ProgId);
+
+  if ((loc = glGetUniformLocation(ProgId, "MatrWVP")) != -1)
+    glUniformMatrix4fv(loc, 1, FALSE, WVP.M[0]);
+  if ((loc = glGetUniformLocation(ProgId, "Time")) != -1)
+    glUniform1f(loc, VG6_Anim.Time);
 
   gl_prim_type = Pr->Type == VG6_RND_PRIM_TRIMESH ? GL_TRIANGLES : GL_TRIANGLE_STRIP;
-  /* gl_prim_type = GL_POINTS; */
 
   glBindVertexArray(Pr->VA);
   if (Pr->IBuf == 0)
@@ -121,6 +126,8 @@ VOID VG6_RndPrimDraw( vg6PRIM *Pr, MATR World )
     glDrawElements(gl_prim_type, Pr->NumOfI, GL_UNSIGNED_INT, NULL);
   }
   glBindVertexArray(0);
+  glUseProgram(0);
+
 } /* End of 'VG6_RndPrimDraw' function */
 
 /* Load primitive from "*.OBJ" file function.

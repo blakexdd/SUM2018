@@ -221,6 +221,18 @@
 					RelativePath=".\RND\RNDPRIM.C"
 					>
 				</File>
+				<Filter
+					Name="RES"
+					>
+					<File
+						RelativePath=".\RND\RES\RNDMTL.C"
+						>
+					</File>
+					<File
+						RelativePath=".\RND\RES\RNDSHD.C"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Units"

@@ -30,7 +30,7 @@ static VOID VG6_UnitResponse( vg6UNIT_Cow *Uni, vg6ANIM *Ani )
 
 static VOID VG6_UnitRender( vg6UNIT_Cow *Uni, vg6ANIM *Ani )
 {
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   VG6_RndPrimDraw(&Uni->COW, MatrRotateY((FLT)clock() / 10));
 }
 
