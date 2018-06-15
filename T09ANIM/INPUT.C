@@ -17,7 +17,7 @@ VOID VG6_AnimInputInit( VOID )
      VG6_Anim.Keys[i] >>= 7;
      VG6_Anim.KeysClick[i] = VG6_Anim.Keys[i] && !VG6_Anim.KeysOld[i];
    }
-   memcpy(VG6_Anim.KeysOld, VG6_Anim.Keys, 256);
+   memcpy(VG6_Anim.KeysOld, VG6_Anim.Keys, sizeof(VG6_Anim.KeysOld));
 
     /* Joystick */
   if (joyGetNumDevs() > 0)
@@ -54,14 +54,13 @@ VOID VG6_AnimInputInit( VOID )
   }
 
   /* Mouse setting up */
-  /*GetCursorPos(&VG6_Anim.pt);
-  ScreenToClient(VG6_Anim.hWnd, &VG6_Anim.pt);*/
+  GetCursorPos(&VG6_Anim.pt);
+  ScreenToClient(VG6_Anim.hWnd, &VG6_Anim.pt);
 
- /* VG6_Anim.Mdx = VG6_Anim.pt.x - VG6_Anim.Mx;
-  VG6_Anim.Mdy = VG6_Anim.pt.y - VG6_Anim.My;*/
-  /* Absolute values */
-  /*VG6_Anim.Mx = VG6_Anim.pt.x;
-  VG6_Anim.My = VG6_Anim.pt.y;*/
+  VG6_Anim.Mdx = VG6_Anim.pt.x - VG6_Anim.Mx;
+  VG6_Anim.Mdy = VG6_Anim.pt.y - VG6_Anim.My;
+  VG6_Anim.Mx = VG6_Anim.pt.x;
+  VG6_Anim.My = VG6_Anim.pt.y;
 
 
 } /* End of "VG6_UnitInputInit" */

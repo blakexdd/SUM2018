@@ -8,35 +8,28 @@
 typedef struct tagvg6UNIT_CTRL
 {
   UNIT_BASE_FIELDS;
-  VEC CameraX;
-  VEC CameraY;
+  VEC CameraLoc;
+  VEC CameraAt;
 } vg6UNIT_CTRL;
 
 static VOID VG6_UnitInit( vg6UNIT_CTRL *Uni, vg6ANIM *Ani )
 {
- // Uni->Camera = VecSet(8, 8, 8);
-
+ Uni->CameraLoc = VecSet(8, 8, 8);
+ Uni->CameraAt = VecSet(0, 0, 0);
 }
 
 static VOID VG6_UnitResponse( vg6UNIT_CTRL *Uni, vg6ANIM *Ani )
 {
-  Uni->CameraX.X = 8;
-  Uni->CameraX.Y = 3;
-  Uni->CameraX.Z = 8;
-
-  Uni->CameraX =
-    OneAxisTransform(Uni->CameraX.X,
-     MatrRotateY(30 * Ani->GlobalDeltaTime * (Ani->Keys[VK_RIGHT] - Ani->Keys[VK_LEFT])));
-  /*Uni->CameraY =
-    VectorTransform(Uni->CameraY,
-     MatrRotateZ(Ani->GlobalDeltaTime * 30 * (Ani->Keys[VK_UP] - Ani->Keys[VK_DOWN])));*/
+  Uni->CameraLoc = VecAddVec(Uni->CameraLoc,
+    VecMulNum(VecSubVec(Uni->CameraAt, Uni->CameraLoc), Ani->DeltaTime * 2 *
+        (Ani->Keys[VK_UP] - Ani->Keys[VK_DOWN]))); 
 }
 
 static VOID VG6_UnitRender( vg6UNIT_CTRL *Uni, vg6ANIM *Ani )
 {
   static CHAR Buf[1024];
 
-  VG6_RndCamSet(Uni->CameraX, VecSet(0, 0, 0), VecSet(0, 1, 0));
+  VG6_RndCamSet(Uni->CameraLoc, VecSet(0, 0, 0), VecSet(0, 1, 0));
   sprintf(Buf, "FPS %.2f", VG6_Anim.FPS);
   SetWindowText(VG6_Anim.hWnd, Buf);
 }

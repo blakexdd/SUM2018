@@ -11,7 +11,7 @@
 #pragma comment(lib, "glew32s")
 #include "../def.h"
 #define GLEW_STATIC
-#include <gl/glew.h>
+#include <glew.h>
 #include <gl/gl.h>
 #include <gl/glu.h>
 

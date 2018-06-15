@@ -112,8 +112,6 @@ VOID VG6_RndPrimDraw( vg6PRIM *Pr, MATR World )
   gl_prim_type = Pr->Type == VG6_RND_PRIM_TRIMESH ? GL_TRIANGLES : GL_TRIANGLE_STRIP;
   /* gl_prim_type = GL_POINTS; */
 
-  glPointSize(3);
-
   glBindVertexArray(Pr->VA);
   if (Pr->IBuf == 0)
     glDrawArrays(gl_prim_type, 0, Pr->NumOfI);

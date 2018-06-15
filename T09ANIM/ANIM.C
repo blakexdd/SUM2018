@@ -40,10 +40,12 @@ VOID VG6_AnimCopyFrame( HDC hDC )
 VOID VG6_AnimRender( VOID )
 {
   INT i;
+
+  VG6_TimerResponse();
+  VG6_AnimInputInit();
   
   for (i = 0; i < VG6_Anim.NumOfUnits; i++)
     VG6_Anim.Units[i]->Response(VG6_Anim.Units[i], &VG6_Anim);
-  VG6_TimerResponse();
   VG6_RndStart();
   for (i = 0; i < VG6_Anim.NumOfUnits; i++)
     VG6_Anim.Units[i]->Render(VG6_Anim.Units[i], &VG6_Anim);
