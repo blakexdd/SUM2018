@@ -11,10 +11,9 @@
 #pragma comment(lib, "glew32s")
 #include "../def.h"
 #define GLEW_STATIC
-#include <glew.h>
+#include <gl/glew.h>
 #include <gl/gl.h>
 #include <gl/glu.h>
-
 
 extern HWND VG6_hWndRn;
 extern HDC VG6_hDCRndFrame;
@@ -26,6 +25,7 @@ extern FLT VG6_RndProjFarClip;
 extern MATR VG6_RndMatrView;
 extern MATR VG6_RndMatrProj;
 extern MATR VG6_RndMatrVP;
+extern INT VG6_MouseWheel;
 
 /* Space vertex representation type */
 typedef struct tagvg6VERTEX
@@ -68,4 +68,5 @@ BOOL VG6_RndPrimCreate( vg6PRIM *Pr, vg6PRIM_TYPE Type, vg6VERTEX *V, INT NoofV,
 VOID VG6_RndPrimFree( vg6PRIM *Pr );
 VOID VG6_RndPrimDraw( vg6PRIM *Pr, MATR World );
 BOOL VG6_RndPrimLoad( vg6PRIM *Pr, CHAR *FileName );
+
 #endif

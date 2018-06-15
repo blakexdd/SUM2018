@@ -140,6 +140,13 @@ __inline VEC VectorTransform(VEC V, MATR M)
     M.M[2][0] * V.X + M.M[2][1] * V.Y + M.M[2][2] * V.Z);
 } 
 
+__inline VEC OneAxisTransform(FLT V, MATR M)
+{
+  return VecSet(M.M[0][0] * V,
+    M.M[1][0] * V,
+    M.M[2][0] * V);
+} 
+
 __inline MATR MatrIdentity(VOID)
 {
   return UnitMatrix;

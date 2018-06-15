@@ -44,7 +44,6 @@ typedef struct tagvg6ANIM
    BYTE Keys[256],
      KeysOld[256],
      KeysClick[256]; 
-
 } vg6ANIM;
 
 extern vg6ANIM VG6_Anim;
@@ -54,7 +53,7 @@ extern FLT VG6_RndProjFarClip;
 extern MATR VG6_RndMatrView;
 extern MATR VG6_RndMatrProj;
 extern MATR VG6_RndMatrVP;
-extern INT VG6_MouseWheel;
+//extern INT VG6_MouseWheel;
 
 struct tagvg6UNIT
 {
@@ -62,16 +61,16 @@ struct tagvg6UNIT
 };
 
 extern vg6ANIM VG6_Anim;
-
 VOID VG6_AnimInit( HWND hWnd );
 VOID VG6_AnimStart( VOID );
+VOID VG6_AnimEnd( VOID );
 VOID VG6_AnimClose( VOID );
 VOID VG6_AnimResize( INT W, INT H );
 VOID VG6_AnimCopyFrame( HDC hDC );
 VOID VG6_AnimRender( VOID );
 VOID VG6_AnimUnitAdd( vg6UNIT *Uni );
 
-VOID VG6_TimerInit ( VOID );
+VOID VG6_TimerInit( VOID );
 VOID VG6_TimerResponse( VOID );
 VOID VG6_AnimInputInit( VOID );
 

@@ -77,6 +77,9 @@ LRESULT CALLBACK MyWindowFunc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 
   switch (Msg)
   {
+  /*case WM_MOUSEWHEEL:
+  VG6_MouseWheel += (SHORT)HIWORD(wParam);
+    return 0;*/
   case WM_CREATE:
     VG6_AnimInit(hWnd);
     SetTimer(hWnd, 47, 3, NULL);
